@@ -38,6 +38,134 @@ export type Database = {
         }
         Relationships: []
       }
+      community_comments: {
+        Row: {
+          author_id: string
+          content: string
+          created_at: string
+          id: string
+          post_id: string
+        }
+        Insert: {
+          author_id: string
+          content: string
+          created_at?: string
+          id?: string
+          post_id: string
+        }
+        Update: {
+          author_id?: string
+          content?: string
+          created_at?: string
+          id?: string
+          post_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "community_comments_post_id_fkey"
+            columns: ["post_id"]
+            isOneToOne: false
+            referencedRelation: "community_posts"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      community_posts: {
+        Row: {
+          author_id: string
+          category: string
+          content: string
+          created_at: string
+          id: string
+          image: string
+          title: string
+          updated_at: string
+        }
+        Insert: {
+          author_id: string
+          category?: string
+          content?: string
+          created_at?: string
+          id?: string
+          image?: string
+          title: string
+          updated_at?: string
+        }
+        Update: {
+          author_id?: string
+          category?: string
+          content?: string
+          created_at?: string
+          id?: string
+          image?: string
+          title?: string
+          updated_at?: string
+        }
+        Relationships: []
+      }
+      equipment: {
+        Row: {
+          brand: string
+          created_at: string
+          description: string
+          district: string
+          fuel: string
+          id: string
+          image: string
+          insured: boolean
+          name: string
+          owner_id: string
+          power_kw: number
+          price_per_day: number
+          price_per_hour: number
+          region: string
+          status: string
+          type: string
+          updated_at: string
+          year: number
+        }
+        Insert: {
+          brand?: string
+          created_at?: string
+          description?: string
+          district?: string
+          fuel?: string
+          id?: string
+          image?: string
+          insured?: boolean
+          name: string
+          owner_id: string
+          power_kw?: number
+          price_per_day?: number
+          price_per_hour?: number
+          region?: string
+          status?: string
+          type?: string
+          updated_at?: string
+          year?: number
+        }
+        Update: {
+          brand?: string
+          created_at?: string
+          description?: string
+          district?: string
+          fuel?: string
+          id?: string
+          image?: string
+          insured?: boolean
+          name?: string
+          owner_id?: string
+          power_kw?: number
+          price_per_day?: number
+          price_per_hour?: number
+          region?: string
+          status?: string
+          type?: string
+          updated_at?: string
+          year?: number
+        }
+        Relationships: []
+      }
       job_applications: {
         Row: {
           applicant_id: string
@@ -127,6 +255,60 @@ export type Database = {
           updated_at?: string
           urgent?: boolean
           workers_needed?: number
+        }
+        Relationships: []
+      }
+      products: {
+        Row: {
+          bnpl: boolean
+          created_at: string
+          description: string
+          id: string
+          image: string
+          organic: boolean
+          owner_id: string
+          price: number
+          rating: number
+          region: string
+          seller: string
+          stock: number
+          title: string
+          unit: string
+          updated_at: string
+        }
+        Insert: {
+          bnpl?: boolean
+          created_at?: string
+          description?: string
+          id?: string
+          image?: string
+          organic?: boolean
+          owner_id: string
+          price?: number
+          rating?: number
+          region?: string
+          seller?: string
+          stock?: number
+          title: string
+          unit?: string
+          updated_at?: string
+        }
+        Update: {
+          bnpl?: boolean
+          created_at?: string
+          description?: string
+          id?: string
+          image?: string
+          organic?: boolean
+          owner_id?: string
+          price?: number
+          rating?: number
+          region?: string
+          seller?: string
+          stock?: number
+          title?: string
+          unit?: string
+          updated_at?: string
         }
         Relationships: []
       }
