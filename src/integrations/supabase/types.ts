@@ -14,16 +14,195 @@ export type Database = {
   }
   public: {
     Tables: {
-      [_ in never]: never
+      ai_messages: {
+        Row: {
+          content: string
+          created_at: string
+          id: string
+          role: string
+          user_id: string
+        }
+        Insert: {
+          content: string
+          created_at?: string
+          id?: string
+          role: string
+          user_id: string
+        }
+        Update: {
+          content?: string
+          created_at?: string
+          id?: string
+          role?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
+      job_applications: {
+        Row: {
+          applicant_id: string
+          created_at: string
+          id: string
+          job_id: string
+          message: string
+          status: Database["public"]["Enums"]["application_status"]
+        }
+        Insert: {
+          applicant_id: string
+          created_at?: string
+          id?: string
+          job_id: string
+          message?: string
+          status?: Database["public"]["Enums"]["application_status"]
+        }
+        Update: {
+          applicant_id?: string
+          created_at?: string
+          id?: string
+          job_id?: string
+          message?: string
+          status?: Database["public"]["Enums"]["application_status"]
+        }
+        Relationships: [
+          {
+            foreignKeyName: "job_applications_job_id_fkey"
+            columns: ["job_id"]
+            isOneToOne: false
+            referencedRelation: "jobs"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      jobs: {
+        Row: {
+          created_at: string
+          daily_rate: number
+          description: string
+          district: string | null
+          employer_name: string
+          end_date: string | null
+          id: string
+          owner_id: string
+          region: string
+          skills: string[]
+          start_date: string | null
+          task_type: string
+          title: string
+          updated_at: string
+          urgent: boolean
+          workers_needed: number
+        }
+        Insert: {
+          created_at?: string
+          daily_rate?: number
+          description?: string
+          district?: string | null
+          employer_name?: string
+          end_date?: string | null
+          id?: string
+          owner_id: string
+          region: string
+          skills?: string[]
+          start_date?: string | null
+          task_type: string
+          title: string
+          updated_at?: string
+          urgent?: boolean
+          workers_needed?: number
+        }
+        Update: {
+          created_at?: string
+          daily_rate?: number
+          description?: string
+          district?: string | null
+          employer_name?: string
+          end_date?: string | null
+          id?: string
+          owner_id?: string
+          region?: string
+          skills?: string[]
+          start_date?: string | null
+          task_type?: string
+          title?: string
+          updated_at?: string
+          urgent?: boolean
+          workers_needed?: number
+        }
+        Relationships: []
+      }
+      profiles: {
+        Row: {
+          avatar_url: string | null
+          created_at: string
+          full_name: string
+          id: string
+          is_verified: boolean
+          language: string
+          phone: string | null
+          region: string | null
+          updated_at: string
+        }
+        Insert: {
+          avatar_url?: string | null
+          created_at?: string
+          full_name?: string
+          id: string
+          is_verified?: boolean
+          language?: string
+          phone?: string | null
+          region?: string | null
+          updated_at?: string
+        }
+        Update: {
+          avatar_url?: string | null
+          created_at?: string
+          full_name?: string
+          id?: string
+          is_verified?: boolean
+          language?: string
+          phone?: string | null
+          region?: string | null
+          updated_at?: string
+        }
+        Relationships: []
+      }
+      user_roles: {
+        Row: {
+          created_at: string
+          id: string
+          role: Database["public"]["Enums"]["app_role"]
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          role: Database["public"]["Enums"]["app_role"]
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          role?: Database["public"]["Enums"]["app_role"]
+          user_id?: string
+        }
+        Relationships: []
+      }
     }
     Views: {
       [_ in never]: never
     }
     Functions: {
-      [_ in never]: never
+      has_role: {
+        Args: {
+          _role: Database["public"]["Enums"]["app_role"]
+          _user_id: string
+        }
+        Returns: boolean
+      }
     }
     Enums: {
-      [_ in never]: never
+      app_role: "farmer" | "employer" | "worker" | "equipment_owner" | "admin"
+      application_status: "pending" | "accepted" | "rejected"
     }
     CompositeTypes: {
       [_ in never]: never
@@ -150,6 +329,9 @@ export type CompositeTypes<
 
 export const Constants = {
   public: {
-    Enums: {},
+    Enums: {
+      app_role: ["farmer", "employer", "worker", "equipment_owner", "admin"],
+      application_status: ["pending", "accepted", "rejected"],
+    },
   },
 } as const
