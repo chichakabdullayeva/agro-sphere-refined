@@ -5,9 +5,8 @@
 @custom-variant dark (&:is(.dark *));
 
 /*
- * AgroAzər — Dark brutalist agri-fintech design system.
- * Bloomberg Terminal × premium agri-marketplace.
- * All colors in oklch. Tokens drive every component variant.
+ * AgroSphere — Premium agri-platform design system.
+ * Dark + Light dual theme. All colors in oklch.
  */
 
 @theme inline {
@@ -28,7 +27,7 @@
   --color-popover: var(--bg-elevated);
   --color-popover-foreground: var(--text-primary);
   --color-primary: var(--accent-green);
-  --color-primary-foreground: var(--bg-primary);
+  --color-primary-foreground: var(--accent-green-fg);
   --color-secondary: var(--bg-tertiary);
   --color-secondary-foreground: var(--text-primary);
   --color-muted: var(--bg-tertiary);
@@ -36,7 +35,7 @@
   --color-accent: var(--accent-teal);
   --color-accent-foreground: var(--text-primary);
   --color-destructive: var(--accent-red);
-  --color-destructive-foreground: var(--text-primary);
+  --color-destructive-foreground: oklch(0.99 0 0);
   --color-warning: var(--accent-amber);
   --color-info: var(--accent-teal);
   --color-border: var(--border);
@@ -52,62 +51,60 @@
   --color-text-tertiary: var(--text-tertiary);
 }
 
+/* ===== Light theme (default) ===== */
 :root {
-  /* Brand surfaces — warm near-black */
-  --bg-primary: oklch(0.16 0.005 95);
-  --bg-secondary: oklch(0.19 0.005 95);
-  --bg-tertiary: oklch(0.22 0.006 95);
-  --bg-elevated: oklch(0.26 0.006 95);
+  --bg-primary: oklch(0.99 0.003 95);
+  --bg-secondary: oklch(0.97 0.005 95);
+  --bg-tertiary: oklch(0.94 0.006 95);
+  --bg-elevated: oklch(1 0 0);
 
-  /* Accents */
-  --accent-green: oklch(0.74 0.16 130);
-  --accent-green-dim: oklch(0.55 0.13 130);
+  --accent-green: oklch(0.58 0.16 145);
+  --accent-green-dim: oklch(0.72 0.13 145);
+  --accent-green-fg: oklch(0.99 0 0);
   --accent-amber: oklch(0.72 0.15 70);
-  --accent-red: oklch(0.58 0.19 27);
-  --accent-teal: oklch(0.62 0.10 180);
+  --accent-red: oklch(0.55 0.20 27);
+  --accent-teal: oklch(0.55 0.10 200);
 
-  /* Text */
-  --text-primary: oklch(0.95 0.01 95);
-  --text-secondary: oklch(0.62 0.01 95);
-  --text-tertiary: oklch(0.38 0.008 95);
+  --text-primary: oklch(0.20 0.01 95);
+  --text-secondary: oklch(0.45 0.01 95);
+  --text-tertiary: oklch(0.62 0.008 95);
 
-  /* Borders */
-  --border: oklch(0.27 0.005 95);
-  --border-accent: oklch(0.33 0.006 95);
+  --border: oklch(0.90 0.005 95);
+  --border-accent: oklch(0.85 0.006 95);
 
   --radius: 10px;
 }
 
+/* ===== Dark theme ===== */
 .dark {
-  /* Same — app is dark-first by default */
   --bg-primary: oklch(0.16 0.005 95);
   --bg-secondary: oklch(0.19 0.005 95);
   --bg-tertiary: oklch(0.22 0.006 95);
   --bg-elevated: oklch(0.26 0.006 95);
+
   --accent-green: oklch(0.74 0.16 130);
   --accent-green-dim: oklch(0.55 0.13 130);
+  --accent-green-fg: oklch(0.16 0.005 95);
   --accent-amber: oklch(0.72 0.15 70);
   --accent-red: oklch(0.58 0.19 27);
   --accent-teal: oklch(0.62 0.10 180);
+
   --text-primary: oklch(0.95 0.01 95);
   --text-secondary: oklch(0.62 0.01 95);
-  --text-tertiary: oklch(0.38 0.008 95);
+  --text-tertiary: oklch(0.42 0.008 95);
+
   --border: oklch(0.27 0.005 95);
   --border-accent: oklch(0.33 0.006 95);
 }
 
 @layer base {
-  * {
-    border-color: var(--color-border);
-  }
-
+  * { border-color: var(--color-border); }
   html, body {
     background-color: var(--color-background);
     color: var(--color-foreground);
     font-family: var(--font-sans);
     -webkit-font-smoothing: antialiased;
   }
-
   ::selection {
     background-color: color-mix(in oklab, var(--accent-green) 35%, transparent);
     color: var(--text-primary);
@@ -117,20 +114,16 @@
 @layer utilities {
   .font-display { font-family: var(--font-display); font-feature-settings: "ss01"; }
   .font-mono-tabular { font-family: var(--font-mono); font-variant-numeric: tabular-nums; }
+  .scrollbar-none::-webkit-scrollbar { display: none; }
+  .scrollbar-none { scrollbar-width: none; }
 
   .badge-pill {
-    display: inline-flex;
-    align-items: center;
-    gap: 6px;
-    padding: 4px 10px;
-    border-radius: 9999px;
-    font-size: 11px;
-    font-weight: 600;
-    text-transform: uppercase;
-    letter-spacing: 0.08em;
+    display: inline-flex; align-items: center; gap: 6px;
+    padding: 4px 10px; border-radius: 9999px;
+    font-size: 11px; font-weight: 600;
+    text-transform: uppercase; letter-spacing: 0.08em;
     border: 1px solid var(--border-accent);
-    background: var(--bg-tertiary);
-    color: var(--text-secondary);
+    background: var(--bg-tertiary); color: var(--text-secondary);
   }
   .badge-pill[data-variant="success"] {
     color: var(--accent-green);
@@ -156,9 +149,7 @@
     mask-image: radial-gradient(ellipse 70% 60% at 50% 30%, black, transparent);
   }
 
-  .pulse-red {
-    animation: pulse-red 2s ease-in-out infinite;
-  }
+  .pulse-red { animation: pulse-red 2s ease-in-out infinite; }
   @keyframes pulse-red {
     0%, 100% { box-shadow: 0 0 0 0 color-mix(in oklab, var(--accent-red) 60%, transparent); }
     50% { box-shadow: 0 0 0 12px color-mix(in oklab, var(--accent-red) 0%, transparent); }
