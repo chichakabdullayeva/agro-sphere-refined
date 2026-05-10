@@ -44,23 +44,55 @@ function RoleSelectPage() {
     setError(null);
     setLoading(true);
     try {
-      const { data, error: signUpError } = await supabase.auth.signUp({
-        email: stored.email,
-        password: stored.password,
-        options: {
-          emailRedirectTo: `${window.location.origin}/dashboard`,
-          data: { full_name: stored.fullName, phone: stored.phone },
-        },
-      });
-      if (signUpError) throw signUpError;
-      const userId = data.user?.id;
+      // 1. Try to get current session (in case signup already happened on previous click)
+      let userId = (await supabase.auth.getSession()).data.session?.user?.id;
+
+      if (!userId) {
+        // 2. Try sign up
+        const { data, error: signUpError } = await supabase.auth.signUp({
+          email: stored.email,
+          password: stored.password,
+          options: {
+            emailRedirectTo: `${window.location.origin}/dashboard`,
+            data: { full_name: stored.fullName, phone: stored.phone },
+          },
+        });
+
+        if (signUpError) {
+          // If user already exists → sign in with provided password
+          const msg = signUpError.message.toLowerCase();
+          if (msg.includes("registered") || msg.includes("exists") || signUpError.status === 422) {
+            const { data: signIn, error: signInErr } = await supabase.auth.signInWithPassword({
+              email: stored.email,
+              password: stored.password,
+            });
+            if (signInErr) throw new Error("Bu e-poçt artıq qeydiyyatdadır. Şifrə düz deyil.");
+            userId = signIn.user?.id;
+          } else if (signUpError.status === 429) {
+            throw new Error("Çox sürətli cəhd. Bir neçə saniyə gözləyin.");
+          } else {
+            throw signUpError;
+          }
+        } else {
+          userId = data.user?.id;
+          // If session not auto-created (rare with auto-confirm off), sign in
+          if (!data.session) {
+            const { data: signIn } = await supabase.auth.signInWithPassword({
+              email: stored.email,
+              password: stored.password,
+            });
+            userId = signIn.user?.id ?? userId;
+          }
+        }
+      }
+
       if (!userId) throw new Error("Hesab yaradıla bilmədi");
 
-      // Insert role (RLS allows user to insert their own).
+      // 3. Upsert role (ignore conflict)
       const { error: roleError } = await supabase
         .from("user_roles")
-        .insert({ user_id: userId, role: selected });
-      if (roleError) throw roleError;
+        .upsert({ user_id: userId, role: selected }, { onConflict: "user_id,role" });
+      if (roleError && !roleError.message.includes("duplicate")) throw roleError;
 
       sessionStorage.removeItem("agro:register");
       navigate({ to: "/dashboard" });

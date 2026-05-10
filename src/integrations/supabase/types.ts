@@ -70,14 +70,76 @@ export type Database = {
           },
         ]
       }
+      community_group_members: {
+        Row: {
+          group_id: string
+          joined_at: string
+          role: string
+          user_id: string
+        }
+        Insert: {
+          group_id: string
+          joined_at?: string
+          role?: string
+          user_id: string
+        }
+        Update: {
+          group_id?: string
+          joined_at?: string
+          role?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "community_group_members_group_id_fkey"
+            columns: ["group_id"]
+            isOneToOne: false
+            referencedRelation: "community_groups"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      community_groups: {
+        Row: {
+          cover: string
+          created_at: string
+          description: string
+          id: string
+          is_private: boolean
+          name: string
+          owner_id: string
+        }
+        Insert: {
+          cover?: string
+          created_at?: string
+          description?: string
+          id?: string
+          is_private?: boolean
+          name: string
+          owner_id: string
+        }
+        Update: {
+          cover?: string
+          created_at?: string
+          description?: string
+          id?: string
+          is_private?: boolean
+          name?: string
+          owner_id?: string
+        }
+        Relationships: []
+      }
       community_posts: {
         Row: {
           author_id: string
           category: string
           content: string
           created_at: string
+          group_id: string | null
           id: string
           image: string
+          media_type: string
+          media_url: string
           title: string
           updated_at: string
         }
@@ -86,8 +148,11 @@ export type Database = {
           category?: string
           content?: string
           created_at?: string
+          group_id?: string | null
           id?: string
           image?: string
+          media_type?: string
+          media_url?: string
           title: string
           updated_at?: string
         }
@@ -96,12 +161,23 @@ export type Database = {
           category?: string
           content?: string
           created_at?: string
+          group_id?: string | null
           id?: string
           image?: string
+          media_type?: string
+          media_url?: string
           title?: string
           updated_at?: string
         }
-        Relationships: []
+        Relationships: [
+          {
+            foreignKeyName: "community_posts_group_id_fkey"
+            columns: ["group_id"]
+            isOneToOne: false
+            referencedRelation: "community_groups"
+            referencedColumns: ["id"]
+          },
+        ]
       }
       equipment: {
         Row: {
@@ -348,6 +424,33 @@ export type Database = {
         }
         Relationships: []
       }
+      user_ratings: {
+        Row: {
+          comment: string
+          created_at: string
+          id: string
+          rated_user_id: string
+          rater_id: string
+          stars: number
+        }
+        Insert: {
+          comment?: string
+          created_at?: string
+          id?: string
+          rated_user_id: string
+          rater_id: string
+          stars: number
+        }
+        Update: {
+          comment?: string
+          created_at?: string
+          id?: string
+          rated_user_id?: string
+          rater_id?: string
+          stars?: number
+        }
+        Relationships: []
+      }
       user_roles: {
         Row: {
           created_at: string
@@ -379,6 +482,10 @@ export type Database = {
           _role: Database["public"]["Enums"]["app_role"]
           _user_id: string
         }
+        Returns: boolean
+      }
+      is_group_member: {
+        Args: { _group: string; _user: string }
         Returns: boolean
       }
     }

@@ -13,7 +13,7 @@ export const Route = createFileRoute("/login")({
 
 function LoginPage() {
   const navigate = useNavigate();
-  const [mode, setMode] = useState<"phone" | "email">("phone");
+  const [mode, setMode] = useState<"phone" | "email">("email");
   const [identifier, setIdentifier] = useState("");
   const [password, setPassword] = useState("");
   const [showPass, setShowPass] = useState(false);
@@ -26,10 +26,21 @@ function LoginPage() {
     setError(null);
     setLoading(true);
     try {
-      const { error } = await supabase.auth.signInWithPassword({
-        email: mode === "email" ? identifier : `${identifier.replace(/\D/g, "")}@phone.agroaz`,
-        password,
-      });
+      let email = identifier.trim();
+      if (mode === "phone") {
+        // Look up email by phone via profiles
+        const digits = identifier.replace(/\D/g, "");
+        const { data: prof } = await supabase
+          .from("profiles")
+          .select("id, phone")
+          .ilike("phone", `%${digits.slice(-9)}%`)
+          .limit(1)
+          .maybeSingle();
+        if (!prof) throw new Error("Bu nömrə ilə hesab tapılmadı");
+        // Get email via auth — we can sign in only via email, so ask user to use email
+        throw new Error("Telefonla giriş hazırda dəstəklənmir. E-poçtla daxil olun.");
+      }
+      const { error } = await supabase.auth.signInWithPassword({ email, password });
       if (error) throw error;
       navigate({ to: "/dashboard" });
     } catch (err) {
